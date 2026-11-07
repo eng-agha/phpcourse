@@ -1,0 +1,106 @@
+@import "@fontsource-variable/vazirmatn/index.css";
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary-50: oklch(97% 0.03 265);
+  --color-primary-100: oklch(93% 0.06 265);
+  --color-primary-200: oklch(85% 0.10 265);
+  --color-primary-300: oklch(72% 0.15 265);
+  --color-primary-400: oklch(58% 0.18 265);
+  --color-primary-500: oklch(45% 0.18 265);
+  --color-primary-600: oklch(38% 0.18 265);
+  --color-primary-700: oklch(30% 0.15 265);
+  --color-primary-800: oklch(24% 0.12 265);
+  --color-primary-900: oklch(18% 0.08 265);
+
+  --color-accent-400: oklch(82% 0.18 85);
+  --color-accent-500: oklch(75% 0.17 85);
+  --color-accent-600: oklch(65% 0.17 85);
+
+  --color-surface-light: #ffffff;
+  --color-surface-light-card: #f8fafc;
+  --color-surface-dark: oklch(18% 0.02 265);
+  --color-surface-dark-card: oklch(22% 0.03 265);
+  --color-surface-dark-border: oklch(30% 0.04 265);
+
+  --font-sans: "Vazirmatn Variable", "Vazirmatn", "Noto Sans Arabic", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Base and RTL utility rules */
+html {
+  scroll-behavior: auto; /* Lenis handles smooth scroll when enabled */
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* RTL Icon Flip utility */
+[dir="rtl"] .icon-flip {
+  transform: scaleX(-1);
+  display: inline-block;
+}
+
+/* Glassmorphism utility */
+.glass-nav {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.dark .glass-nav {
+  background: rgba(18, 22, 34, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* High-contrast focus rings for accessibility */
+:focus-visible {
+  outline: 2px solid oklch(75% 0.17 85);
+  outline-offset: 3px;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6);
+}
+
+/* Timeline vertical line animation support */
+.timeline-fill-bar {
+  transform-origin: top center;
+  will-change: transform;
+}
+
+/* Reduced motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#primaryGrad)" />
+  <!-- Database Icon -->
+  <ellipse cx="32" cy="18" rx="16" ry="6" stroke="#ffffff" stroke-width="3" stroke-linecap="round" fill="none" />
+  <path d="M16 18v12c0 3.3 7.2 6 16 6s16-2.7 16-6V18" stroke="#ffffff" stroke-width="3" stroke-linecap="round" fill="none" />
+  <path d="M16 30v12c0 3.3 7.2 6 16 6s16-2.7 16-6V30" stroke="url(#accentGrad)" stroke-width="3" stroke-linecap="round" fill="none" />
+  <!-- PHP Prompt Accent -->
+  <circle cx="46" cy="46" r="6" fill="#f59e0b" />
+</svg>
