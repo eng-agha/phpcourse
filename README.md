@@ -53,3 +53,22 @@ absolute asset paths and an absolute home link in `404.html`.
 Only deploy `dist/`; `lessons/` contains existing authoring documents and is not
 part of the website output. No analytics, trackers, remote fonts or CDN runtime
 libraries are used.
+
+## Course pages and lesson content
+
+The home page is now a course index. Each phase has a static page at
+`/phpcourse/phases/1/` through `/phpcourse/phases/10/`.
+`src/data/lessons.js` contains 47 topic lessons: Sorani explanations, code,
+walkthroughs and practical exercises. `scripts/course-pages.mjs` renders these
+into the build output and updates the sitemap. Code is escaped and displayed
+left-to-right; PHP/SQL examples run in the learner's own environment.
+
+`npm run dev` builds and serves the actual multi-page course with Vite preview.
+After changing content, rebuild and reload. This avoids displaying the former
+marketing-page template during local development.
+
+Validation: `npm run check` verifies every phase/topic, rendered lesson field,
+code block and topic anchor. PHP snippets were syntax checked with the locally
+installed PHP; independent examples were also executed. Database, framework,
+container and deployment examples require their documented environments and
+have not been integration tested here.

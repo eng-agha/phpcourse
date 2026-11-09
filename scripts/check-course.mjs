@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict'
+import {readFileSync,existsSync} from 'node:fs'
+import {roadmapPhases} from '../src/data/roadmap.js'
+import {escape} from '../src/render/page.js'
+const home=readFileSync('dist/index.html','utf8')
+for(const p of roadmapPhases){
+ const path=`dist/phases/${p.id}/index.html`
+ assert.ok(existsSync(path))
+ const html=readFileSync(path,'utf8')
+ assert.equal((html.match(/<h1\b/g)||[]).length,1)
+ for(const t of [p.title,p.project,...p.topics]) assert.ok(html.includes(escape(t)))
+ assert.ok(home.includes(`phases/${p.id}/`))
+ assert.ok(html.includes('aria-current="page"'))
+ assert.ok(readFileSync('dist/sitemap.xml','utf8').includes(`phases/${p.id}/`))
+}
+console.log('PASS: course index, all 10 phase pages, content, navigation and sitemap.')
+import { phaseLessons } from '../src/data/lessons.js'
+let count = 0
+for (const phase of roadmapPhases) {
+ const lessons = phaseLessons[phase.id]
+ assert.equal(lessons.length, phase.topics.length)
+ const html = readFileSync(`dist/phases/${phase.id}/index.html`, 'utf8')
+ for (const [index, lesson] of lessons.entries()) {
+  for (const field of ['explanation','code','walkthrough','exercise']) {
+   assert.ok(lesson[field]?.length > 30, `Missing ${phase.id}.${index+1} ${field}`)
+   assert.ok(html.includes(escape(lesson[field])), `Unrendered ${phase.id}.${index+1} ${field}`)
+  }
+  assert.ok(html.includes(`id="topic-${index+1}"`))
+  count++
+ }
+ assert.equal((html.match(/<pre\b/g)||[]).length, lessons.length)
+}
+console.log(`PASS: ${count} authored lessons with explanations, escaped code, walkthroughs, exercises and topic anchors.`)

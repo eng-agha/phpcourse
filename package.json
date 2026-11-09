@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "npm run build && vite preview",
+    "build": "vite build && node scripts/course-pages.mjs",
     "preview": "vite preview",
-    "check": "node scripts/check-build.mjs"
+    "check": "node scripts/check-course.mjs"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",
