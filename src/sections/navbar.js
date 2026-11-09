@@ -17,7 +17,7 @@ export function initNavbar(getLenis) {
   })
   update()
   const scrolled = () => navbar?.classList.toggle('glass-nav', scrollY > 20)
-  addEventListener('scroll', scrolled, { passive: true }); scrolled()
+  addEventListener('scroll', scrolled, { passive: true })
   const close = () => menu?.close()
   menuButton?.addEventListener('click', () => {
     menu.showModal()
