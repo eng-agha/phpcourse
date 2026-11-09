@@ -33,7 +33,7 @@ CREATE TABLE students (
     stage TINYINT UNSIGNED NOT NULL
 );
 INSERT INTO students (name, email, stage)
-VALUES ('Diyar', 'diyar@example.com', 4);
+VALUES ('Agha', 'agha@example.com', 4);
 SELECT id, name, stage FROM students;`,
 '15B':`<?php
 // Save as db.php. Set DB_USER and DB_PASSWORD in your local environment.
@@ -51,7 +51,7 @@ try {
 }`,
 '16A':`<?php
 require __DIR__ . '/db.php';
-$email = 'diyar@example.com';
+$email = 'agha@example.com';
 $query = $pdo->prepare('SELECT id, name FROM students WHERE email = ?');
 $query->execute([$email]);
 $student = $query->fetch(PDO::FETCH_ASSOC);
@@ -177,7 +177,7 @@ for(const [id,source] of Object.entries(reuse))examples[id]=examples[source];
 
 // Simplify lecturer demonstrations that used constructs not taught yet.
 examples['02A'] = `<?php
-$name = "Diyar";
+$name = "Agha";
 $stage = 4;
 $gpa = 3.75;
 $active = true;

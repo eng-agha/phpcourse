@@ -23,8 +23,8 @@
     "kurdish": "سەرەتا جیاوازی فایل و ناونیشانی localhost تێبگە؛ PHP لە سێرڤەر جێبەجێ دەبێت، نەک بە کردنەوەی فایل بە تەنها.",
     "guided": "Open the project folder in VS Code; create and run index.php; inspect page source.",
     "task": "Change the name to Sara and the department to IT; save, refresh and inspect page source.",
-    "expected": "Welcome to PHP, Diyar / Computer Networks",
-    "code": "<?php\ndeclare(strict_types=1);\n$name = \"Diyar\";\n$department = \"Computer Networks\";\n?>\n<!doctype html><meta charset=\"utf-8\">\n<h1>Welcome to PHP</h1>\n<p><?= $name ?> / <?= $department ?></p>\n",
+    "expected": "Welcome to PHP, Agha / Computer Networks",
+    "code": "<?php\ndeclare(strict_types=1);\n$name = \"Agha\";\n$department = \"Computer Networks\";\n?>\n<!doctype html><meta charset=\"utf-8\">\n<h1>Welcome to PHP</h1>\n<p><?= $name ?> / <?= $department ?></p>\n",
     "source": "week01B"
   },
   {
@@ -37,8 +37,8 @@
     "kurdish": "گۆڕاو ناوێکە بۆ نرخ؛ ناوەکە و نرخەکە یەک شت نین. جۆری داتا و جیاوازی کوتیشنەکان بە نموونە تاقی بکەرەوە.",
     "guided": "Build a student profile using variables, scalar types and PHP embedded in HTML.",
     "task": "Set enrollment to false and change the GPA; confirm the label changes to No.",
-    "expected": "Name: Diyar; Stage: 4; GPA: 3.75; bool(true). Each variable stores one value. The boolean is inspected using var_dump rather than converted to a display label.",
-    "code": "<?php\ndeclare(strict_types=1);\nfunction e(string $v): string {\n    return htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE, \"UTF-8\");\n}\n$student = [\"name\"=>\"Diyar\", \"stage\"=>4, \"gpa\"=>3.75, \"active\"=>true];\nforeach ($student as $key=>$value) {\n    $display = is_bool($value) ? ($value ? \"Yes\" : \"No\") : (string)$value;\n    echo \"<p>\" . e($key) . \": \" . e($display) . \"</p>\";\n}\n",
+    "expected": "Name: Agha; Stage: 4; GPA: 3.75; bool(true). Each variable stores one value. The boolean is inspected using var_dump rather than converted to a display label.",
+    "code": "<?php\ndeclare(strict_types=1);\nfunction e(string $v): string {\n    return htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE, \"UTF-8\");\n}\n$student = [\"name\"=>\"Agha\", \"stage\"=>4, \"gpa\"=>3.75, \"active\"=>true];\nforeach ($student as $key=>$value) {\n    $display = is_bool($value) ? ($value ? \"Yes\" : \"No\") : (string)$value;\n    echo \"<p>\" . e($key) . \": \" . e($display) . \"</p>\";\n}\n",
     "source": "week02A"
   },
   {
@@ -51,8 +51,8 @@
     "kurdish": "گۆڕاو ناوێکە بۆ نرخ؛ ناوەکە و نرخەکە یەک شت نین. جۆری داتا و جیاوازی کوتیشنەکان بە نموونە تاقی بکەرەوە.",
     "guided": "Compare quotes and interpolation; concatenate text; format a report with string functions.",
     "task": "Compare strlen and mb_strlen for a Kurdish name; explain bytes versus characters.",
-    "expected": "Diyar Farhad scored 85.5%; the Unicode string has more bytes than characters.",
-    "code": "<?php\ndeclare(strict_types=1);\nfunction e(string $v): string {\n    return htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE, \"UTF-8\");\n}\n$name = trim(\"  diyar farhad  \");\n$label = ucwords($name);\n$line = sprintf(\"%s scored %.1f%%\", $label, 85.5);\necho e($line) . \"<br>\";\n$unicode = \"سڵاو\";\necho strlen($unicode) . \" bytes; \" . mb_strlen($unicode, \"UTF-8\") . \" characters\";\n",
+    "expected": "Agha Farhad scored 85.5%; the Unicode string has more bytes than characters.",
+    "code": "<?php\ndeclare(strict_types=1);\nfunction e(string $v): string {\n    return htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE, \"UTF-8\");\n}\n$name = trim(\"  agha farhad  \");\n$label = ucwords($name);\n$line = sprintf(\"%s scored %.1f%%\", $label, 85.5);\necho e($line) . \"<br>\";\n$unicode = \"سڵاو\";\necho strlen($unicode) . \" bytes; \" . mb_strlen($unicode, \"UTF-8\") . \" characters\";\n",
     "source": "week02B"
   },
   {

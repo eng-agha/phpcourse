@@ -45,4 +45,4 @@ for week in range(1,26):
    if resolved.exists() and resolved.suffix in ['.php','.sql']: refs.append(resolved)
   lesson={'id':sid,'week':week,'part':part,'title':title,'theme':weeks[week-1][0],'explanation':weeks[week-1][1],'kurdish':weeks[week-1][2],'guided':guided,'task':task,'expected':expected,'code':code,'source':f'week{sourceid}'}
   lessons.append(lesson)
-Path('src/data/beginner.json').write_text(json.dumps(lessons,ensure_ascii=False,indent=2),encoding='utf-8')
+Path('src/data/beginner.json').write_text(json.dumps(lessons,ensure_ascii=False,indent=2).replace('Diyar','Agha').replace('diyar','agha'),encoding='utf-8')
