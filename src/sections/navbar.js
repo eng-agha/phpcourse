@@ -3,6 +3,7 @@ export function initNavbar(getLenis) {
   const toggle = document.getElementById('theme-toggle')
   const menu = document.getElementById('mobile-menu')
   const menuButton = document.getElementById('mobile-menu-btn')
+  let followingLink = false
   const systemTheme = matchMedia('(prefers-color-scheme: dark)')
   const saved = () => { try { return localStorage.getItem('theme') } catch { return null } }
   const update = () => toggle?.setAttribute('aria-pressed', String(document.documentElement.classList.contains('dark')))
@@ -30,11 +31,12 @@ export function initNavbar(getLenis) {
     menuButton.setAttribute('aria-expanded', 'false')
     document.body.classList.remove('menu-open')
     getLenis()?.start()
-    menuButton.focus({ preventScroll: true })
+    if (!followingLink) menuButton.focus({ preventScroll: true })
+    followingLink = false
   })
   document.getElementById('close-menu-btn')?.addEventListener('click', close)
   menu?.addEventListener('click', event => {
-    if (event.target.closest('a')) close()
+    if (event.target.closest('a')) { followingLink = true; close() }
     if (event.target === menu) {
       const rect = menu.getBoundingClientRect()
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) close()

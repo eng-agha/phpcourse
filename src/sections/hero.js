@@ -1,6 +1,6 @@
 import { gsap } from 'gsap'
 export function initHero() {
-  if (!document.querySelector('#hero') || scrollY > innerHeight) return
+  if (!document.querySelector('#hero') || (location.hash && location.hash !== '#hero')) return
   const elements = [...document.querySelectorAll('.hero-eyebrow, .hero-title, .hero-subtitle, .hero-cta-container, .hero-footnote, .hero-visual')]
   const timeline = gsap.timeline()
   // Animate plain numeric values to avoid repeated computed-style/layout reads.
