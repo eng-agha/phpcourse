@@ -12,6 +12,33 @@ export const modules = [
  {id:9,title:'Student records, safely',range:[18,20],description:'Create, read, update and delete with clear security checks.',ku:'CRUD بە پشکنینی ڕوونی پاراستن جێبەجێ بکە.',icon:'09'},
  {id:10,title:'Build it yourself',range:[21,25],description:'Organise plain PHP, revisit difficult ideas and finish a local project.',ku:'PHP ـی سادە ڕێکبخە، پێداچوونەوە بکە و پڕۆژەیەکی لۆکاڵ تەواو بکە.',icon:'10'}
 ];
-export const lessons=rawLessons.map(l=>({...l,code:examples[l.id]||l.code,module:modules.find(m=>l.week>=m.range[0]&&l.week<=m.range[1]).id}));
+const sessionTitles = [
+ ['Check your local server','Run your first PHP page'],
+ ['Variables & scalar types','Quotes, strings & names'],
+ ['Calculate a total','Compare values carefully'],
+ ['Choose with if and else','Handle choices with switch'],
+ ['Trace for and while loops','Explore foreach, break & continue'],
+ ['Rebuild a small calculator','Find and repair loop mistakes'],
+ ['Write a reusable function','Parameters, return & scope'],
+ ['Create indexed & named arrays','Sort records without mixing them up'],
+ ['Build a device registry','Filter records & show summaries'],
+ ['Read a GET form','Submit a POST form'],
+ ['Validate fields on the server','Keep form values & escape output'],
+ ['Save a cookie preference','Inspect, change & remove cookies'],
+ ['Sessions & flash messages','A simple protected login'],
+ ['Read and write a local file','Handle an image upload safely'],
+ ['Create your first database tables','Connect PHP with PDO'],
+ ['Bind values in prepared statements','Search, sort & limit records'],
+ ['Rebuild a form-to-database flow','Debug common database failures'],
+ ['Insert a validated student record','List, search & paginate records'],
+ ['Load and update one student','Delete with confirmation & CSRF'],
+ ['Password hashes & safe HTML','Test session permissions & CSRF'],
+ ['Share helpers and page fragments','Rebuild shared page fragments'],
+ ['Validate a fresh registration form','Repair malformed form input'],
+ ['Rebuild a flash-message flow','Test ownership and logout'],
+ ['Assemble your student records app','Peer review & repair your app'],
+ ['Build independently from a brief','Explain your code & reflect']
+];
+export const lessons=rawLessons.map(l=>({...l,title:sessionTitles[l.week-1][l.part==='A'?0:1],code:examples[l.id]||l.code,module:modules.find(m=>l.week>=m.range[0]&&l.week<=m.range[1]).id}));
 export const moduleLessons=id=>lessons.filter(l=>l.module===id);
 export const labels={done:'Mark as practised',undo:'Practised — undo',search:'Find a lesson',resume:'Pick up where you left off',memory:'Progress stays in this browser. Practise before marking a lesson complete.',blocked:'Saving is unavailable. Progress will last only while this page stays open.'};

@@ -1,5 +1,6 @@
+import { initFunctionReference } from './sections/function-reference.js'
 import {modules,lessons,labels} from './data/course.js'
-const root=new URL(document.querySelector('link[rel="canonical"]').href).pathname.replace(/(?:lessons\/week\d+[AB]\/|phases\/\d+\/|about\/)$/,'')
+const root=new URL(document.querySelector('link[rel="canonical"]').href).pathname.replace(/(?:lessons\/week\d+[AB]\/|phases\/\d+\/|about\/|functions\/)$/,'')
 const lessonUrl=id=>`${root}lessons/week${id}/`
 const key='php-classroom-foundation-v2',valid=new Set(lessons.map(l=>l.id))
 let state={done:[],last:null}
@@ -15,3 +16,5 @@ const theme=document.querySelector('.theme-switch');theme?.setAttribute('aria-pr
 document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()=>document.dispatchEvent(new Event('classroom-layout'))))
 // Motion is progressive: all content starts readable, with no JS prerequisite.
 if(!matchMedia('(prefers-reduced-motion: reduce)').matches){import('./classroom-motion.js').then(({initMotion})=>initMotion()).catch(()=>{})}
+
+initFunctionReference(root, state.last)

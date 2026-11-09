@@ -1,3 +1,4 @@
+import { functionPage } from '../src/render/functions.js'
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs'
 import {modules,lessons} from '../src/data/course.js'
 import {lessonPage,modulePage,about,e} from '../src/render/classroom.js'
@@ -11,6 +12,7 @@ function emit(path,title,description,body){
 }
 for(const m of modules)emit(`phases/${m.id}/`,m.title,m.description,modulePage(base,m.id))
 for(const lesson of lessons){if(!lesson.code)throw new Error('Missing example '+lesson.id);emit(`lessons/week${lesson.id}/`,lesson.title,lesson.guided,lessonPage(base,lesson,highlight))}
+emit('functions/','25 useful PHP functions','A beginner-friendly reference with examples, expected output and Kurdish highlights.',functionPage(base))
 emit('about/','Meet Abdulrahman Ismael','Your PHP instructor and technical trainer.',about(base))
 writeFileSync('dist/sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${paths.map(p=>`<url><loc>${canonical}${p}</loc></url>`).join('')}</urlset>`)
 writeFileSync('dist/robots.txt',`User-agent: *\nAllow: /\nSitemap: ${canonical}sitemap.xml\n`)

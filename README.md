@@ -66,3 +66,18 @@ URLs; local default is https://eng-agha.github.io/phpcourse/.
 
 Practice progress uses `php-classroom-foundation-v2`, separate from the previous
 roadmap so incompatible old completion IDs are not misreported as new practice.
+
+## Function reference and navigation
+
+`/functions/` contains 25 selected practical functions (the original seven plus
+18 additions), grouped by text, arrays, numbers, dates and safe HTML output.
+Each has an English description, executable example, exact expected output,
+important caveat, Sorani highlight, practice change and official PHP manual link.
+Examples are executed with the local PHP during checks, not just syntax-linted.
+This is a course selection, not a measured frequency ranking.
+
+The homepage shows ten chapter choices with one primary action each. Lesson
+pages have concise titles, a visible lesson number, chapter-return link and
+named previous/next lessons. Mobile reading starts with the lesson rather than
+the sidebar. Contextual reference links return to the helper section in the last
+lesson; function search and category filters do not alter course progress.
