@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://abdulrahman.github.io/PHP/sitemap.xml
+Sitemap: https://eng-agha.github.io/phpcourse/sitemap.xml

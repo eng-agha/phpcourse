@@ -1,35 +1,34 @@
 name: Deploy static site to GitHub Pages
-
 on:
   push:
-    branches: ['main']
+    branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
-  group: 'pages'
+  group: pages
   cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
+      - uses: actions/configure-pages@v6
+        id: pages
       - run: npm ci
       - run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v4
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+      - run: npm run check
+      - uses: actions/upload-pages-artifact@v5
         with:
-          path: './dist'
-
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -39,4 +38,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
