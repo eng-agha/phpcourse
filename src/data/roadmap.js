@@ -293,6 +293,7 @@ export const faqList = [
 // All navigation, accessibility labels and section copy live here too.
 export const ui = {
   brand: 'نەخشەڕێگا',
+  more: 'زیاتر بخوێنەوە',
   edition: 'وەشانی ٢٠٢٦',
   skip: 'بازدان بۆ ناوەڕۆک',
   nav: [

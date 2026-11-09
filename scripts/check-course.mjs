@@ -3,6 +3,9 @@ import {readFileSync,existsSync} from 'node:fs'
 import {roadmapPhases} from '../src/data/roadmap.js'
 import {escape} from '../src/render/page.js'
 const home=readFileSync('dist/index.html','utf8')
+assert.ok(home.includes('id="hero"'))
+assert.equal((home.match(/class="timeline-card"/g)||[]).length,10)
+assert.equal((home.match(/class="button button-primary phase-more"/g)||[]).length,10)
 for(const p of roadmapPhases){
  const path=`dist/phases/${p.id}/index.html`
  assert.ok(existsSync(path))
@@ -10,6 +13,8 @@ for(const p of roadmapPhases){
  assert.equal((html.match(/<h1\b/g)||[]).length,1)
  for(const t of [p.title,p.project,...p.topics]) assert.ok(html.includes(escape(t)))
  assert.ok(home.includes(`phases/${p.id}/`))
+ const card=home.match(new RegExp('data-phase-id="'+p.id+'"[\\s\\S]*?</details>'))?.[0]
+ assert.ok(card?.includes(`phases/${p.id}/`), 'More link must be inside its phase accordion')
  assert.ok(html.includes('aria-current="page"'))
  assert.ok(readFileSync('dist/sitemap.xml','utf8').includes(`phases/${p.id}/`))
 }

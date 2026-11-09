@@ -15,8 +15,6 @@ function page(title, description, content, path='') {
  .replace(/<meta property="og:url" content="[^"]*">/,`<meta property="og:url" content="${canonical}${path}">`)
  .replace(/<body>[\s\S]*?<\/body>/,`<body>${nav}<main id="main" class="container course-main">${content}</main></body>`)
 }
-const cards = roadmapPhases.map(p=>`<a class="course-card" href="${url(p)}"><span class="eyebrow">${p.id} / 10 · ${e(p.duration)}</span>${icon(p.icon)}<h2>${e(p.title)}</h2><p>${e(p.summary)}</p><span class="course-open">${ui.open} ←</span></a>`).join('')
-writeFileSync('dist/index.html',page(ui.title,ui.intro,`<div class="section-heading"><span class="eyebrow">PHP / MySQL / Laravel</span><h1>${ui.title}</h1><p>${ui.intro}</p></div><div class="course-grid">${cards}</div>`))
 for (const [i,p] of roadmapPhases.entries()) {
  const lessons = phaseLessons[p.id]
  if (!lessons || lessons.length !== p.topics.length) throw new Error(`Incomplete lessons for phase ${p.id}`)
@@ -27,5 +25,5 @@ for (const [i,p] of roadmapPhases.entries()) {
  writeFileSync(`dist/phases/${p.id}/index.html`,page(p.title,p.summary,content,`phases/${p.id}/`))
 }
 writeFileSync('dist/sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['',...roadmapPhases.map(p=>`phases/${p.id}/`)].map(path=>`<url><loc>${canonical}${path}</loc></url>`).join('')}</urlset>`)
-console.log('Generated course index and 10 independent phase pages.')
+console.log('Preserved roadmap homepage and generated 10 independent phase pages.')
 

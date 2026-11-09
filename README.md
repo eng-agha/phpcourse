@@ -56,7 +56,7 @@ libraries are used.
 
 ## Course pages and lesson content
 
-The home page is now a course index. Each phase has a static page at
+The original roadmap homepage is preserved. Each expandable phase card includes a More link to its course page. Each phase has a static page at
 `/phpcourse/phases/1/` through `/phpcourse/phases/10/`.
 `src/data/lessons.js` contains 47 topic lessons: Sorani explanations, code,
 walkthroughs and practical exercises. `scripts/course-pages.mjs` renders these
