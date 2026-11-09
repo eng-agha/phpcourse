@@ -1,0 +1,27 @@
+import { roadmapPhases } from '../data/roadmap.js'
+import { phaseLessons } from '../data/lessons.js'
+import { learningUi as t, quizzes } from '../data/learning.js'
+const key='php-course-learning-v1'
+const topicIds=new Set(roadmapPhases.flatMap(p=>p.topics.map((_,i)=>`${p.id}.${i+1}`)))
+let state={done:[],checks:[],last:null}
+try { const saved=JSON.parse(localStorage.getItem(key)||'null'); if(saved && typeof saved==='object') state={done:Array.isArray(saved.done)?saved.done.filter(id=>topicIds.has(id)):[],checks:Array.isArray(saved.checks)?saved.checks.filter(x=>typeof x==='string'):[],last:topicIds.has(saved.last)?saved.last:null} } catch {}
+function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch{document.querySelectorAll('.storage-status').forEach(el=>el.textContent=t.storageFailed)}}
+const base=new URL(document.querySelector('link[rel="canonical"]').href).pathname.replace(/(?:phases\/\d+\/|about\/)$/,'')
+const link=id=>`${base}phases/${id.split('.')[0]}/#topic-${id.split('.')[1]}`
+function progress(){
+ const total=topicIds.size, done=new Set(state.done)
+ document.querySelectorAll('[data-course-progress]').forEach(el=>{el.replaceChildren();const label=document.createElement('p');label.textContent=`${t.progress}: ${done.size} / ${total}`;const bar=document.createElement('progress');bar.max=total;bar.value=done.size;bar.setAttribute('aria-label',t.progress);el.append(label,bar)})
+ document.querySelectorAll('[data-phase-progress]').forEach(el=>{const id=Number(el.dataset.phaseProgress);const count=roadmapPhases.find(p=>p.id===id).topics.length;const n=[...done].filter(x=>x.startsWith(id+'.')).length;el.textContent=`${t.progress}: ${n} / ${count} (${Math.round(n/count*100)}٪)`})
+ document.querySelectorAll('[data-complete]').forEach(btn=>{const completed=done.has(btn.dataset.complete);btn.setAttribute('aria-pressed',String(completed));btn.textContent=completed?'✓ '+t.undo:t.complete})
+ document.querySelectorAll('[data-resume]').forEach(a=>{a.hidden=!state.last;if(state.last){a.href=link(state.last);const [p,i]=state.last.split('.').map(Number);a.textContent=`${t.resume}: ${roadmapPhases.find(x=>x.id===p).topics[i-1]}`}})
+}
+export function initLearning(){
+ progress()
+ document.querySelectorAll('[data-complete]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.complete;state.done=state.done.includes(id)?state.done.filter(x=>x!==id):[...state.done,id];state.last=id;save();progress()}))
+ document.querySelectorAll('[data-project-check]').forEach(box=>{box.checked=state.checks.includes(box.dataset.projectCheck);box.addEventListener('change',()=>{const id=box.dataset.projectCheck;state.checks=box.checked?[...new Set([...state.checks,id])]:state.checks.filter(x=>x!==id);save()})})
+ const lessons=[...document.querySelectorAll('[data-lesson-id]')]
+ if(lessons.length){const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio);if(visible[0]){state.last=visible[0].target.dataset.lessonId;save();progress()}},{rootMargin:'-15% 0px -45% 0px'});lessons.forEach(el=>observer.observe(el))}
+ document.querySelectorAll('.lesson pre, .project-guide pre').forEach(pre=>{const button=document.createElement('button');button.type='button';button.className='copy-code';button.textContent=t.copy;pre.before(button);button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.textContent);button.textContent=t.copied;setTimeout(()=>button.textContent=t.copy,1800)}catch{button.textContent=t.copyFailed}})})
+ const search=document.querySelector('#topic-search');if(search){const results=document.querySelector('[data-search-results]'), status=document.querySelector('[data-search-status]');const normalize=s=>s.toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک');const index=roadmapPhases.flatMap(p=>p.topics.map((title,i)=>({id:`${p.id}.${i+1}`,title,phase:p.title,text:normalize(title+' '+p.title+' '+phaseLessons[p.id][i].explanation)})));search.addEventListener('input',()=>{const query=normalize(search.value.trim());results.replaceChildren();if(!query){results.hidden=true;status.textContent='';return}const matches=index.filter(item=>item.text.includes(query));status.textContent=matches.length?`${matches.length} ${t.results}`:t.noResults;results.hidden=!matches.length;for(const item of matches){const li=document.createElement('li'),a=document.createElement('a');a.href=link(item.id);a.textContent=`${item.id} — ${item.title} · ${item.phase}`;li.append(a);results.append(li)}})}
+ document.querySelectorAll('[data-quiz]').forEach(form=>{const questions=quizzes[form.dataset.quiz],score=form.querySelector('.quiz-score');form.addEventListener('submit',event=>{event.preventDefault();const data=new FormData(form);if(questions.some((_,i)=>!data.has('q'+i))){score.textContent=t.unanswered;return}let correct=0;questions.forEach((q,i)=>{const ok=Number(data.get('q'+i))===q.answer;if(ok)correct++;const feedback=form.querySelector(`[data-feedback="${i}"]`);feedback.hidden=false;feedback.classList.toggle('correct',ok);feedback.textContent=`${ok?t.correct:t.incorrect} — ${q.options[q.answer]}. ${q.why}`});score.textContent=`${t.score}: ${correct} / ${questions.length}`});form.addEventListener('reset',()=>{score.textContent='';form.querySelectorAll('.quiz-feedback').forEach(el=>{el.hidden=true;el.textContent=''})})})
+}

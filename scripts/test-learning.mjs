@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict'
+import {readFileSync} from 'node:fs'
+import {Window} from 'happy-dom'
+import {quizzes} from '../src/data/learning.js'
+const window=new Window({url:'https://eng-agha.github.io/phpcourse/phases/2/'})
+for(const name of ['document','localStorage','navigator','FormData','Event','IntersectionObserver'])Object.defineProperty(globalThis,name,{value:window[name],configurable:true})
+window.document.write(readFileSync('dist/phases/2/index.html','utf8'))
+const {initLearning}=await import('../src/sections/learning.js')
+initLearning()
+const button=document.querySelector('[data-complete="2.1"]')
+button.click();assert.equal(button.getAttribute('aria-pressed'),'true')
+assert.ok(JSON.parse(localStorage.getItem('php-course-learning-v1')).done.includes('2.1'))
+assert.ok(document.querySelector('[data-resume]').href.endsWith('/phases/2/#topic-1'))
+button.click();assert.equal(button.getAttribute('aria-pressed'),'false')
+const search=document.querySelector('#topic-search');search.value='PDO';search.dispatchEvent(new Event('input'));assert.ok(document.querySelectorAll('[data-search-results] a').length>0)
+search.value='nonexistent-topic-012345';search.dispatchEvent(new Event('input'));assert.equal(document.querySelectorAll('[data-search-results] a').length,0)
+search.value='';search.dispatchEvent(new Event('input'));assert.ok(document.querySelector('[data-search-results]').hidden)
+const form=document.querySelector('[data-quiz]');form.dispatchEvent(new Event('submit',{cancelable:true}));assert.ok(form.querySelector('.quiz-score').textContent.includes('تکایە'))
+quizzes[2].forEach((q,i)=>form.querySelector(`[name="q${i}"][value="${q.answer}"]`).checked=true)
+form.dispatchEvent(new Event('submit',{cancelable:true}));assert.ok(form.querySelector('.quiz-score').textContent.endsWith('5 / 5'));assert.equal(form.querySelectorAll('.quiz-feedback.correct').length,5)
+form.querySelector('[name="q0"][value="0"]').checked=true;form.dispatchEvent(new Event('submit',{cancelable:true}));assert.ok(form.querySelector('.quiz-score').textContent.endsWith('4 / 5'))
+form.reset();assert.equal(form.querySelector('.quiz-score').textContent,'');assert.equal(form.querySelectorAll('.quiz-feedback:not([hidden])').length,0)
+const check=document.querySelector('[data-project-check]');check.checked=true;check.dispatchEvent(new Event('change'));assert.ok(JSON.parse(localStorage.getItem('php-course-learning-v1')).checks.includes(check.dataset.projectCheck))
+let copied='';Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{copied=text}},configurable:true})
+document.querySelector('.copy-code').click();await new Promise(resolve=>setTimeout(resolve,0));assert.equal(copied,document.querySelector('.lesson pre').textContent)
+assert.ok(document.querySelector('.syntax-keyword'))
+await window.happyDOM.abort()
+console.log('PASS: completion toggles/persistence, resume URL, search, quiz 5/5 and 4/5, reset, project checklist and clipboard.')
+
+// Reload into a fresh document/module while keeping this origin's storage.
+window.document.body.innerHTML=readFileSync('dist/phases/2/index.html','utf8').match(/<body>([\s\S]*?)<\/body>/)[1]
+localStorage.setItem('php-course-learning-v1',JSON.stringify({done:['2.1','999.1'],checks:['2.0'],last:'2.2'}))
+const fresh=await import('../src/sections/learning.js?reload')
+fresh.initLearning()
+assert.equal(document.querySelector('[data-complete="2.1"]').getAttribute('aria-pressed'),'true')
+assert.ok(document.querySelector('[data-resume]').href.endsWith('/phases/2/#topic-2'))
+assert.ok(document.querySelector('[data-project-check="2.0"]').checked)
+Object.defineProperty(window.localStorage,'setItem',{value:()=>{throw new Error('Storage blocked')},configurable:true})
+document.querySelector('[data-complete="2.2"]').click()
+assert.ok(document.querySelector('.storage-status').textContent.includes('بەردەست نییە'))
+await window.happyDOM.abort()
+console.log('PASS: reload persistence, stale topic filtering and blocked-storage fallback.')

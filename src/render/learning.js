@@ -1,0 +1,10 @@
+import { learningUi as t, quizzes, projects } from '../data/learning.js'
+import { escape as e } from './page.js'
+export function projectGuide(id) {
+ const p=projects[id]; const list=items=>`<ul>${items.map(x=>`<li>${e(x)}</li>`).join('')}</ul>`
+ return `<section class="project-guide"><h2>${t.project}</h2><h3>${t.requirements}</h3>${list(p.requirements)}<h3>${t.structure}</h3><pre dir="ltr" tabindex="0"><code>${e(p.files.join('\n'))}</code></pre><h3>${t.steps}</h3><ol>${p.steps.map(x=>`<li>${e(x)}</li>`).join('')}</ol><figure class="project-preview"><figcaption>${t.preview}</figcaption><div class="table-scroll"><table><thead><tr>${p.columns.map(x=>`<th scope="col">${e(x)}</th>`).join('')}</tr></thead><tbody>${p.rows.map(row=>`<tr>${row.map(x=>`<td>${e(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p>${t.demo}</p></figure><h3>${t.checklist}</h3>${p.checks.map((x,i)=>`<label class="project-check"><input type="checkbox" data-project-check="${id}.${i}"><span>${e(x)}</span></label>`).join('')}</section>`
+}
+export function quizSection(id) {
+ return `<section class="phase-quiz"><h2>${t.quiz}</h2><form data-quiz="${id}">${quizzes[id].map((q,i)=>`<fieldset><legend>${i+1}. ${e(q.prompt)}</legend>${q.options.map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"><span>${e(o)}</span></label>`).join('')}<p class="quiz-feedback" data-feedback="${i}" hidden></p></fieldset>`).join('')}<button class="button button-primary" type="submit">${t.submit}</button> <button class="button button-secondary" type="reset">${t.retry}</button><p class="quiz-score" role="status" aria-live="polite"></p></form></section>`
+}
+export function learningHub() { return `<section class="learning-hub container" aria-label="${t.progress}"><div data-course-progress></div><p class="storage-status">${t.storage}</p><a class="button button-primary" data-resume hidden></a><div class="course-search"><label for="topic-search">${t.search}</label><input id="topic-search" type="search" placeholder="${t.placeholder}" autocomplete="off"><p data-search-status role="status"></p><ul data-search-results hidden></ul></div></section>` }

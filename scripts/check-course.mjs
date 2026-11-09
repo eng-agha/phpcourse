@@ -28,12 +28,12 @@ for (const phase of roadmapPhases) {
  for (const [index, lesson] of lessons.entries()) {
   for (const field of ['explanation','code','walkthrough','exercise']) {
    assert.ok(lesson[field]?.length > 30, `Missing ${phase.id}.${index+1} ${field}`)
-   assert.ok(html.includes(escape(lesson[field])), `Unrendered ${phase.id}.${index+1} ${field}`)
+   assert.ok(html.replace(/<span class="syntax-[^"]+">|<\/span>/g, '').includes(escape(lesson[field])), `Unrendered ${phase.id}.${index+1} ${field}`)
   }
   assert.ok(html.includes(`id="topic-${index+1}"`))
   count++
  }
- assert.equal((html.match(/<pre\b/g)||[]).length, lessons.length)
+ assert.equal((html.match(/<pre\b/g)||[]).length, lessons.length + 1)
 }
 console.log(`PASS: ${count} authored lessons with explanations, escaped code, walkthroughs, exercises and topic anchors.`)
 import { instructor } from '../src/data/instructor.js'
@@ -47,3 +47,21 @@ assert.ok(existsSync('dist/images/abdulrahman.webp'))
 assert.ok(about.includes('width="320" height="320"'))
 assert.ok(readFileSync('dist/sitemap.xml','utf8').includes('about/'))
 console.log('PASS: instructor introduction, profile, portrait asset, social links and sitemap.')
+import {quizzes,projects} from '../src/data/learning.js'
+import {highlight} from '../src/render/highlight.js'
+assert.ok(home.includes('id="topic-search"'))
+assert.ok(home.includes('data-resume'))
+assert.ok(home.includes('data-course-progress'))
+for(const phase of roadmapPhases){
+ const html=readFileSync(`dist/phases/${phase.id}/index.html`,'utf8')
+ assert.equal((html.match(/data-complete=/g)||[]).length,phase.topics.length)
+ assert.ok(html.includes('data-phase-progress="'+phase.id+'"'))
+ assert.equal((html.match(/<fieldset>/g)||[]).length,5)
+ assert.ok(html.includes('class="project-preview"'))
+ assert.ok(html.includes('syntax-'))
+ assert.equal(quizzes[phase.id].length,5)
+ for(const q of quizzes[phase.id]){assert.ok(q.options[q.answer]);assert.equal(new Set(q.options).size,3);assert.ok(q.why.length>20)}
+ assert.ok(projects[phase.id].checks.length>=3)
+}
+assert.ok(!highlight('<script>alert("x")</script>').includes('<script>'))
+console.log('PASS: progress controls, resume/search hub, 50 quiz questions, 10 project guides and safe syntax highlighting.')

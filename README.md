@@ -72,3 +72,22 @@ code block and topic anchor. PHP snippets were syntax checked with the locally
 installed PHP; independent examples were also executed. Database, framework,
 container and deployment examples require their documented environments and
 have not been integration tested here.
+
+## Learning features
+
+- Topic completion and per-phase/overall progress use localStorage under
+  `php-course-learning-v1`; project checklist state and the last visible topic
+  are stored on the same device. Blocked storage falls back to session memory.
+- The learning hub searches all 47 topic titles, phase names and explanations.
+  Sorani/Arabic variants of ya and kaf are normalized. Resume links point to the
+  actual last topic rather than marking a lesson complete automatically.
+- Code blocks use escaped, build-time token highlighting. Copy buttons copy
+  their text content; clipboard failure presents a manual-copy message.
+- Each phase includes five authored multiple-choice questions with answer
+  explanations, explicit grading and reset. Quiz scores do not complete lessons.
+- Ten project guides include prerequisites, file structure, implementation steps,
+  an explicitly illustrative result preview and persistent acceptance checklists.
+- `npm run check` also runs DOM interaction tests with development-only happy-dom:
+  completion, persistence/reload, search, resume, clipboard, scoring/reset,
+  checklist persistence and blocked-storage behavior. This is not a visual
+  browser/layout audit.

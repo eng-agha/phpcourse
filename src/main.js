@@ -1,3 +1,4 @@
+import { initLearning } from './sections/learning.js'
 import { gsap } from 'gsap'
 import 'lenis/dist/lenis.css'
 import { initNavbar } from './sections/navbar.js'
@@ -47,3 +48,5 @@ document.addEventListener('click', async event => {
   if (lenis && !motionPreference.matches) lenis.scrollTo(target, { offset: -90, onComplete: complete })
   else { target.scrollIntoView({ behavior: motionPreference.matches ? 'instant' : 'smooth' }); complete() }
 })
+
+initLearning()
