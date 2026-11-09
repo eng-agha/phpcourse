@@ -1,67 +1,14 @@
 import assert from 'node:assert/strict'
-import {readFileSync,existsSync} from 'node:fs'
-import {roadmapPhases} from '../src/data/roadmap.js'
-import {escape} from '../src/render/page.js'
-const home=readFileSync('dist/index.html','utf8')
-assert.ok(home.includes('id="hero"'))
-assert.equal((home.match(/class="timeline-card"/g)||[]).length,10)
-assert.equal((home.match(/class="button button-primary phase-more"/g)||[]).length,10)
-for(const p of roadmapPhases){
- const path=`dist/phases/${p.id}/index.html`
- assert.ok(existsSync(path))
- const html=readFileSync(path,'utf8')
- assert.equal((html.match(/<h1\b/g)||[]).length,1)
- for(const t of [p.title,p.project,...p.topics]) assert.ok(html.includes(escape(t)))
- assert.ok(home.includes(`phases/${p.id}/`))
- const card=home.match(new RegExp('data-phase-id="'+p.id+'"[\\s\\S]*?</details>'))?.[0]
- assert.ok(card?.includes(`phases/${p.id}/`), 'More link must be inside its phase accordion')
- assert.ok(html.includes('aria-current="page"'))
- assert.ok(readFileSync('dist/sitemap.xml','utf8').includes(`phases/${p.id}/`))
-}
-console.log('PASS: course index, all 10 phase pages, content, navigation and sitemap.')
-import { phaseLessons } from '../src/data/lessons.js'
-let count = 0
-for (const phase of roadmapPhases) {
- const lessons = phaseLessons[phase.id]
- assert.equal(lessons.length, phase.topics.length)
- const html = readFileSync(`dist/phases/${phase.id}/index.html`, 'utf8')
- for (const [index, lesson] of lessons.entries()) {
-  for (const field of ['explanation','code','walkthrough','exercise']) {
-   assert.ok(lesson[field]?.length > 30, `Missing ${phase.id}.${index+1} ${field}`)
-   assert.ok(html.replace(/<span class="syntax-[^"]+">|<\/span>/g, '').includes(escape(lesson[field])), `Unrendered ${phase.id}.${index+1} ${field}`)
-  }
-  assert.ok(html.includes(`id="topic-${index+1}"`))
-  count++
- }
- assert.equal((html.match(/<pre\b/g)||[]).length, lessons.length + 1)
-}
-console.log(`PASS: ${count} authored lessons with explanations, escaped code, walkthroughs, exercises and topic anchors.`)
-import { instructor } from '../src/data/instructor.js'
-const about=readFileSync('dist/about/index.html','utf8')
-assert.equal((about.match(/<h1\b/g)||[]).length,1)
-assert.ok(home.includes('class="instructor-intro"'))
-assert.ok(home.includes('about/'))
-assert.ok(about.includes(instructor.name))
-for(const social of instructor.socials) assert.ok(about.includes(social.url))
-assert.ok(existsSync('dist/images/abdulrahman.webp'))
-assert.ok(about.includes('width="320" height="320"'))
-assert.ok(readFileSync('dist/sitemap.xml','utf8').includes('about/'))
-console.log('PASS: instructor introduction, profile, portrait asset, social links and sitemap.')
-import {quizzes,projects} from '../src/data/learning.js'
-import {highlight} from '../src/render/highlight.js'
-assert.ok(home.includes('id="topic-search"'))
-assert.ok(home.includes('data-resume'))
-assert.ok(home.includes('data-course-progress'))
-for(const phase of roadmapPhases){
- const html=readFileSync(`dist/phases/${phase.id}/index.html`,'utf8')
- assert.equal((html.match(/data-complete=/g)||[]).length,phase.topics.length)
- assert.ok(html.includes('data-phase-progress="'+phase.id+'"'))
- assert.equal((html.match(/<fieldset>/g)||[]).length,5)
- assert.ok(html.includes('class="project-preview"'))
- assert.ok(html.includes('syntax-'))
- assert.equal(quizzes[phase.id].length,5)
- for(const q of quizzes[phase.id]){assert.ok(q.options[q.answer]);assert.equal(new Set(q.options).size,3);assert.ok(q.why.length>20)}
- assert.ok(projects[phase.id].checks.length>=3)
-}
-assert.ok(!highlight('<script>alert("x")</script>').includes('<script>'))
-console.log('PASS: progress controls, resume/search hub, 50 quiz questions, 10 project guides and safe syntax highlighting.')
+import {readFileSync,existsSync,readdirSync,mkdirSync,writeFileSync} from 'node:fs'
+import {join} from 'node:path'
+import {execFileSync} from 'node:child_process'
+import {lessons,modules} from '../src/data/course.js'
+import {e} from '../src/render/classroom.js'
+assert.equal(lessons.length,50);assert.equal(modules.length,10)
+const files=[];function walk(dir){for(const item of readdirSync(dir,{withFileTypes:true})){const path=join(dir,item.name);if(item.isDirectory())walk(path);else if(path.endsWith('.html'))files.push(path)}}walk('dist')
+assert.equal(files.length,63)
+for(const file of files){const html=readFileSync(file,'utf8');assert.match(html,/<html lang="en" dir="ltr">/);assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.ok(!/\b(?:OOP|API|Laravel|Deployment)\b|data-quiz|copy-code|navigator\.clipboard/i.test(html),file+' includes removed content');const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(ids.length,new Set(ids).size);for(const [,href]of html.matchAll(/href="(\/phpcourse\/[^"#]*)(?:#[^"]*)?"/g)){const target=href.slice('/phpcourse/'.length);assert.ok(existsSync('dist/'+target+(target.endsWith('/')?'index.html':'')),file+' broken link '+href)}}
+for(const lesson of lessons){const html=readFileSync(`dist/lessons/week${lesson.id}/index.html`,'utf8');assert.ok(html.includes(e(lesson.title)));assert.ok(html.includes(e(lesson.kurdish)));assert.equal((html.match(/class="kurdish-note"/g)||[]).length,3);assert.ok(html.replace(/<span class="syntax-[^"]+">|<\/span>/g,'').includes(e(lesson.code)));assert.ok(html.includes(`data-complete="${lesson.id}"`));assert.ok(lesson.task.length>20)}
+assert.ok(readFileSync('dist/sitemap.xml','utf8').includes('lessons/week25B/'))
+const php='C:/xampp/php/php.exe';if(existsSync(php)){mkdirSync('qa/foundation',{recursive:true});let count=0;for(const l of lessons){if(l.id==='15A')continue;const file=`qa/foundation/${l.id}.php`;writeFileSync(file,l.code);const output=execFileSync(php,['-l',file],{encoding:'utf8'});assert.ok(!/Warning|Fatal|Parse error/.test(output),l.id+output);count++}console.log(`PASS: ${count} PHP examples linted.`)}
+console.log('PASS: 63 static pages, 50 lecture-based lessons, bilingual direction, examples, links, sitemap and removal of advanced topics/copy/quiz.')

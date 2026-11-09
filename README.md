@@ -1,93 +1,68 @@
-# PHP & MySQL roadmap
+# PHP Classroom
 
-A static, Kurdish Sorani course roadmap. Built with Vite, Tailwind CSS v4,
-vanilla JavaScript, GSAP/ScrollTrigger, Lenis, Swiper, Lucide and locally bundled Vazirmatn fonts.
+A static, beginner-first PHP & MySQL course for Abdulrahman Ismael.
 
-## Develop and verify
+## Learning design
 
-Requires Node 22.12+ (CI uses Node 24).
+25 weeks, two 60-minute practical sessions per week, 50 lesson pages grouped into
+10 chapters. The sequence is based on the instructor's Updated_2026 practical
+plan and per-session lab briefs. Basic HTML/CSS is assumed. English is the main
+language; RTL Sorani highlights appear beneath the English explanations and
+practice prompts. Each session follows understand → predict → run/change →
+independent practice → evidence → reflection.
+
+The final weeks deliberately replace the original advanced topics with file
+organisation, foundation review, debugging and a local student-records project.
+No object-oriented-programming course, web-service course, framework course,
+production-hosting lessons, copy buttons or quiz features are present.
+
+## Develop
 
 ```sh
 npm ci
 npm run dev
 npm run build
 npm run check
-npm run preview
 ```
 
-The default URL path is `/phpcourse/`. The generated `dist/` directory is the
-complete website: no PHP, API, database or Node runtime is needed to serve it.
-The phase cards, prerequisites, resource links and FAQs are rendered into HTML
-at build time and work without JavaScript. JavaScript progressively adds motion,
-theme switching, the mobile dialog and the resource carousel.
+`dev` builds and serves the static output. Rebuild after editing lesson data.
+Node 22.12+ is required for authoring; CI uses Node 24. `dist/` is the complete
+site with no production PHP, database or Node runtime.
 
-## Content and structure
+## Source
 
-- `src/data/roadmap.js`: every Kurdish string, all ten phases, prerequisites, resources and FAQs.
-- `src/render/page.js`: build-time semantic HTML and Lucide SVG rendering.
-- `src/sections/`: small modules for page interactions.
-- `src/animations/`: shared scroll reveal helpers.
-- `src/style.css`: Tailwind v4 tokens, responsive layout and both themes.
-- `scripts/check-build.mjs`: static content, asset/anchor, SEO, credential-signature and contrast checks.
+- `src/data/beginner.json`: imported session objectives, independent tasks,
+  expected results, English teaching explanations and Sorani highlights.
+- `src/data/beginner-examples.js`: adapted focused examples for database and
+  protected-action lessons, plus simplified early examples.
+- `src/data/course.js`: chapter grouping and assembled lesson records.
+- `src/render/classroom.js`: semantic homepage, chapter, lesson and instructor views.
+- `src/render/highlight.js`: escaped static code highlighting.
+- `src/main.js`: practice journal, resume, English/Sorani search and theme.
+- `src/classroom-motion.js`: GSAP/ScrollTrigger reveals and Lenis scrolling;
+  reduced-motion preference disables and cleans up animated contexts.
+- `scripts/course-pages.mjs`: 50 lesson pages, 10 chapters, instructor and sitemap.
+- `scripts/import-beginner.py`: one-time import provenance from the instructor's
+  local source directory. Not needed for build/CI; reimporting overwrites edited
+  expected results, so review changes before rebuilding.
 
-Edit the data file and rebuild to change content. Native `details` elements keep
-accordions keyboard accessible. The mobile menu uses a native modal dialog with
-focus wrapping, Escape/backdrop dismissal, and scroll locking. Reduced motion
-skips Lenis and scroll animations; changes to the preference are handled live.
+Focused PDO and protected-handler excerpts require the stated local schema,
+configuration and instructor-prepared authentication/permission checks. They are
+not complete standalone endpoints. The website displays PHP; learners execute
+it in their own local environment. Original source teaching documents are kept
+in `lessons/` but are not included in the published output.
 
-## GitHub Pages
+## Verification and publication
 
-Repository: https://github.com/eng-agha/phpcourse
-Expected site: https://eng-agha.github.io/phpcourse/
+`npm run check` validates 63 output pages, internal links, English/RTL Sorani
+markup, code content, the sitemap, removed features, practice state, search and
+theme controls. On this Windows authoring machine it also lints 49 PHP examples
+with the installed PHP; it does not claim to integration-test a MySQL classroom
+application. Database and protected-action examples need their documented setup.
 
-Select **Settings → Pages → Source → GitHub Actions** once. Every push to `main`
-then builds, validates and deploys using `.github/workflows/deploy.yml`.
-`actions/configure-pages` supplies `SITE_URL`, so the build derives the correct
-base path, canonical URL, social image, sitemap and robots entry. Action majors
-were checked against the official GitHub release pages on November 9, 2026.
+Push `main` to deploy through GitHub Actions. Pages must use GitHub Actions as
+its source. `SITE_URL` from configure-pages drives the base path and canonical
+URLs; local default is https://eng-agha.github.io/phpcourse/.
 
-For another host, set `SITE_URL` to its full URL. Optionally override
-`VITE_BASE_PATH` with an absolute path ending in `/`. Nested missing pages use
-absolute asset paths and an absolute home link in `404.html`.
-
-Only deploy `dist/`; `lessons/` contains existing authoring documents and is not
-part of the website output. No analytics, trackers, remote fonts or CDN runtime
-libraries are used.
-
-## Course pages and lesson content
-
-The original roadmap homepage is preserved. Each expandable phase card includes a More link to its course page. Each phase has a static page at
-`/phpcourse/phases/1/` through `/phpcourse/phases/10/`.
-`src/data/lessons.js` contains 47 topic lessons: Sorani explanations, code,
-walkthroughs and practical exercises. `scripts/course-pages.mjs` renders these
-into the build output and updates the sitemap. Code is escaped and displayed
-left-to-right; PHP/SQL examples run in the learner's own environment.
-
-`npm run dev` builds and serves the actual multi-page course with Vite preview.
-After changing content, rebuild and reload. This avoids displaying the former
-marketing-page template during local development.
-
-Validation: `npm run check` verifies every phase/topic, rendered lesson field,
-code block and topic anchor. PHP snippets were syntax checked with the locally
-installed PHP; independent examples were also executed. Database, framework,
-container and deployment examples require their documented environments and
-have not been integration tested here.
-
-## Learning features
-
-- Topic completion and per-phase/overall progress use localStorage under
-  `php-course-learning-v1`; project checklist state and the last visible topic
-  are stored on the same device. Blocked storage falls back to session memory.
-- The learning hub searches all 47 topic titles, phase names and explanations.
-  Sorani/Arabic variants of ya and kaf are normalized. Resume links point to the
-  actual last topic rather than marking a lesson complete automatically.
-- Code blocks use escaped, build-time token highlighting. Copy buttons copy
-  their text content; clipboard failure presents a manual-copy message.
-- Each phase includes five authored multiple-choice questions with answer
-  explanations, explicit grading and reset. Quiz scores do not complete lessons.
-- Ten project guides include prerequisites, file structure, implementation steps,
-  an explicitly illustrative result preview and persistent acceptance checklists.
-- `npm run check` also runs DOM interaction tests with development-only happy-dom:
-  completion, persistence/reload, search, resume, clipboard, scoring/reset,
-  checklist persistence and blocked-storage behavior. This is not a visual
-  browser/layout audit.
+Practice progress uses `php-classroom-foundation-v2`, separate from the previous
+roadmap so incompatible old completion IDs are not misreported as new practice.
