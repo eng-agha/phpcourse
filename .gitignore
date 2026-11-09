@@ -6,3 +6,6 @@ dist
 
 lighthouse-report*.json
 qa/
+
+# Original personal reference files; publish only the selected portrait.
+asset/

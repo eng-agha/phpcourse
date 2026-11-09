@@ -36,3 +36,14 @@ for (const phase of roadmapPhases) {
  assert.equal((html.match(/<pre\b/g)||[]).length, lessons.length)
 }
 console.log(`PASS: ${count} authored lessons with explanations, escaped code, walkthroughs, exercises and topic anchors.`)
+import { instructor } from '../src/data/instructor.js'
+const about=readFileSync('dist/about/index.html','utf8')
+assert.equal((about.match(/<h1\b/g)||[]).length,1)
+assert.ok(home.includes('class="instructor-intro"'))
+assert.ok(home.includes('about/'))
+assert.ok(about.includes(instructor.name))
+for(const social of instructor.socials) assert.ok(about.includes(social.url))
+assert.ok(existsSync('dist/images/abdulrahman.webp'))
+assert.ok(about.includes('width="320" height="320"'))
+assert.ok(readFileSync('dist/sitemap.xml','utf8').includes('about/'))
+console.log('PASS: instructor introduction, profile, portrait asset, social links and sitemap.')

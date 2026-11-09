@@ -1,3 +1,5 @@
+import { instructorPage } from '../src/render/instructor.js'
+import { instructor } from '../src/data/instructor.js'
 import { phaseLessons, lessonUi } from '../src/data/lessons.js'
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { roadmapPhases, resources, courseUi as ui } from '../src/data/roadmap.js'
@@ -24,6 +26,8 @@ for (const [i,p] of roadmapPhases.entries()) {
  mkdirSync(`dist/phases/${p.id}`,{recursive:true})
  writeFileSync(`dist/phases/${p.id}/index.html`,page(p.title,p.summary,content,`phases/${p.id}/`))
 }
-writeFileSync('dist/sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['',...roadmapPhases.map(p=>`phases/${p.id}/`)].map(path=>`<url><loc>${canonical}${path}</loc></url>`).join('')}</urlset>`)
+mkdirSync('dist/about', { recursive: true })
+writeFileSync('dist/about/index.html', page(instructor.name + ' — ' + instructor.more, instructor.bio, instructorPage(base), 'about/'))
+writeFileSync('dist/sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['','about/',...roadmapPhases.map(p=>`phases/${p.id}/`)].map(path=>`<url><loc>${canonical}${path}</loc></url>`).join('')}</urlset>`)
 console.log('Preserved roadmap homepage and generated 10 independent phase pages.')
 
