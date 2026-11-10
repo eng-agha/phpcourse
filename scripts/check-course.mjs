@@ -6,12 +6,12 @@ import {lessons,modules} from '../src/data/course.js'
 import {e} from '../src/render/classroom.js'
 assert.equal(lessons.length,50);assert.equal(modules.length,10)
 const files=[];function walk(dir){for(const item of readdirSync(dir,{withFileTypes:true})){const path=join(dir,item.name);if(item.isDirectory())walk(path);else if(path.endsWith('.html'))files.push(path)}}walk('dist')
-assert.equal(files.length,64)
+assert.equal(files.length,114)
 for(const file of files){const html=readFileSync(file,'utf8');assert.match(html,/<html lang="en" dir="ltr">/);assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.ok(!/\b(?:OOP|API|Laravel|Deployment)\b|data-quiz|copy-code|navigator\.clipboard/i.test(html),file+' includes removed content');const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(ids.length,new Set(ids).size);for(const [,href]of html.matchAll(/href="(\/phpcourse\/[^"#]*)(?:#[^"]*)?"/g)){const target=href.slice('/phpcourse/'.length);assert.ok(existsSync('dist/'+target+(target.endsWith('/')?'index.html':'')),file+' broken link '+href)}}
 for(const lesson of lessons){const html=readFileSync(`dist/lessons/week${lesson.id}/index.html`,'utf8');assert.ok(html.includes(e(lesson.title)));assert.ok(html.includes(e(lesson.kurdish)));assert.equal((html.match(/class="kurdish-note"/g)||[]).length,3);assert.ok(html.replace(/<span class="syntax-[^"]+">|<\/span>/g,'').includes(e(lesson.code)));assert.ok(html.includes(`data-complete="${lesson.id}"`));assert.ok(lesson.task.length>20)}
 assert.ok(readFileSync('dist/sitemap.xml','utf8').includes('lessons/week25B/'))
 const php='C:/xampp/php/php.exe';if(existsSync(php)){mkdirSync('qa/foundation',{recursive:true});let count=0;for(const l of lessons){if(l.id==='15A')continue;const file=`qa/foundation/${l.id}.php`;writeFileSync(file,l.code);const output=execFileSync(php,['-l',file],{encoding:'utf8'});assert.ok(!/Warning|Fatal|Parse error/.test(output),l.id+output);count++}console.log(`PASS: ${count} PHP examples linted.`)}
-console.log('PASS: 64 static pages, 50 lecture-based lessons, bilingual direction, examples, links, sitemap and removal of advanced topics/copy/quiz.')
+console.log('PASS: 114 static pages, 50 lecture-based lessons, bilingual direction, examples, links, sitemap and removal of advanced topics/copy/quiz.')
 
 const {functions}=await import('../src/data/functions.js')
 assert.equal(functions.length,25);assert.equal(new Set(functions.map(f=>f.name)).size,25)
@@ -19,6 +19,11 @@ for(const name of ['strlen','mb_strlen','str_replace','count','sort','date','htm
 const reference=readFileSync('dist/functions/index.html','utf8')
 assert.equal((reference.match(/data-function="/g)||[]).length,25)
 for(const fn of functions){assert.ok(reference.includes('id="fn-'+fn.name+'"'));assert.ok(reference.includes(e(fn.ku)));if(existsSync(php)){const result=execFileSync(php,['-r',fn.code.replace(/^<\?php\s*/,'')],{encoding:'utf8'});assert.equal(result.trim(),fn.output,fn.name+' output mismatch')}}
-assert.ok(readFileSync('dist/index.html','utf8').includes('View lessons'))
+assert.equal((readFileSync('dist/index.html','utf8').match(/class="lecture-row reveal"/g)||[]).length,25)
 assert.ok(!readFileSync('dist/index.html','utf8').includes('practical lessons</span>'))
 console.log('PASS: 25 functions, original seven retained, bilingual reference and all example outputs verified with PHP.')
+
+const {lectures,lectureSlides}=await import('../src/data/lectures.js')
+assert.equal(lectures.length,25)
+for(const lecture of lectures){const read=readFileSync(`dist/lectures/${lecture.id}/index.html`,'utf8');const present=readFileSync(`dist/lectures/${lecture.id}/slides/index.html`,'utf8');assert.ok(read.includes('Present slides'));assert.ok(read.includes('id="practice"'));assert.equal((present.match(/data-slide="/g)||[]).length,lectureSlides(lecture).length);assert.ok(present.includes('data-overview'));assert.ok(present.includes('data-fullscreen'));assert.ok(read.includes(e(lecture.title)))}
+console.log('PASS: 25 direct lecture entries, shared reading/slides content and practice links.')

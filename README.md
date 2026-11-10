@@ -81,3 +81,23 @@ pages have concise titles, a visible lesson number, chapter-return link and
 named previous/next lessons. Mobile reading starts with the lesson rather than
 the sidebar. Contextual reference links return to the helper section in the last
 lesson; function search and category filters do not alter course progress.
+
+## Lecture-first navigation and presentation mode
+
+The homepage now links directly to 25 numbered lectures. Each lecture has
+Read lesson, Present slides and Practise links. `/lectures/01/` combines the first
+week's setup work: XAMPP installation, VS Code, Apache, project folders,
+index.php, localhost mapping, common failures and independent practice.
+The original 50 session pages remain available as detailed practice/evidence
+sheets; completion continues to measure practice rather than slide views.
+
+`src/data/lectures.js` assembles weekly lecture content from the existing lesson
+data; `lectureSlides()` is the shared content source for both the reading page
+and presentation. Lecture 01 has a curated setup sequence. Other lectures reuse
+both sessions' explanations, examples, expected results and tasks.
+
+Presentation controls: previous/next, Home/End, PageUp/PageDown or arrow keys,
+a modal slide list, optional fullscreen and stable #slide-N links. A long slide
+scrolls within the stage rather than clipping code. Without JavaScript the
+slides remain readable as a normal document. Reduced motion removes the
+transition; no slides automatically advance or complete a practice session.

@@ -1,3 +1,5 @@
+import { lectures } from '../src/data/lectures.js'
+import { lectureRead, lecturePresentation } from '../src/render/lectures.js'
 import { functionPage } from '../src/render/functions.js'
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs'
 import {modules,lessons} from '../src/data/course.js'
@@ -10,6 +12,7 @@ function emit(path,title,description,body){
  // Vite places bundled scripts in the head, so every generated page uses the same entry.
  mkdirSync('dist/'+path,{recursive:true});writeFileSync('dist/'+path+'index.html',html);paths.push(path)
 }
+for(const lecture of lectures){emit(`lectures/${lecture.id}/`,lecture.title,lecture.summary,lectureRead(base,lecture));emit(`lectures/${lecture.id}/slides/`,lecture.title+' — presentation',lecture.summary,lecturePresentation(base,lecture))}
 for(const m of modules)emit(`phases/${m.id}/`,m.title,m.description,modulePage(base,m.id))
 for(const lesson of lessons){if(!lesson.code)throw new Error('Missing example '+lesson.id);emit(`lessons/week${lesson.id}/`,lesson.title,lesson.guided,lessonPage(base,lesson,highlight))}
 emit('functions/','25 useful PHP functions','A beginner-friendly reference with examples, expected output and Kurdish highlights.',functionPage(base))

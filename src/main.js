@@ -1,6 +1,8 @@
+import { lectures } from './data/lectures.js'
+import { initPresentation } from './sections/presentation.js'
 import { initFunctionReference } from './sections/function-reference.js'
 import {modules,lessons,labels} from './data/course.js'
-const root=new URL(document.querySelector('link[rel="canonical"]').href).pathname.replace(/(?:lessons\/week\d+[AB]\/|phases\/\d+\/|about\/|functions\/)$/,'')
+const root=new URL(document.querySelector('link[rel="canonical"]').href).pathname.replace(/(?:lessons\/week\d+[AB]\/|phases\/\d+\/|about\/|functions\/|lectures\/\d+\/(?:slides\/)?)$/,'')
 const lessonUrl=id=>`${root}lessons/week${id}/`
 const key='php-classroom-foundation-v2',valid=new Set(lessons.map(l=>l.id))
 let state={done:[],last:null}
@@ -11,10 +13,12 @@ const current=document.querySelector('[data-lesson]')?.dataset.lesson;if(valid.h
 update()
 document.querySelectorAll('[data-complete]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.complete;state.done=state.done.includes(id)?state.done.filter(x=>x!==id):[...state.done,id];save();update()}))
 const normalize=s=>s.toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
-const search=document.querySelector('#lesson-search');if(search){search.addEventListener('input',()=>{const value=normalize(search.value.trim()),results=document.querySelector('[data-results]'),status=document.querySelector('[data-search-status]');results.replaceChildren();if(!value){results.hidden=true;status.textContent='';return}const matches=lessons.filter(l=>normalize(l.title+' '+l.guided+' '+l.kurdish).includes(value));status.textContent=matches.length?`${matches.length} lessons found`:'No matching lessons. Try a different word.';results.hidden=!matches.length;for(const l of matches){const li=document.createElement('li'),a=document.createElement('a');a.href=lessonUrl(l.id);a.textContent=`${l.id} — ${l.title}`;li.append(a);results.append(li)}})}
+const search=document.querySelector('#lesson-search');if(search){search.addEventListener('input',()=>{const value=normalize(search.value.trim()),results=document.querySelector('[data-results]'),status=document.querySelector('[data-search-status]');results.replaceChildren();if(!value){results.hidden=true;status.textContent='';return}const matches=lectures.filter(l=>normalize(l.title+' '+l.summary+' '+l.ku+' '+l.sessions.map(s=>s.title).join(' ')).includes(value));status.textContent=matches.length?`${matches.length} lectures found`:'No matching lectures. Try a different word.';results.hidden=!matches.length;for(const l of matches){const li=document.createElement('li'),a=document.createElement('a');a.href=`${root}lectures/${l.id}/`;a.textContent=`Lecture ${l.id} — ${l.title}`;li.append(a);results.append(li)}})}
 const theme=document.querySelector('.theme-switch');theme?.setAttribute('aria-pressed',String(document.documentElement.classList.contains('dark')));theme?.addEventListener('click',()=>{const dark=document.documentElement.classList.toggle('dark');theme.setAttribute('aria-pressed',String(dark));try{localStorage.setItem('classroom-theme',dark?'dark':'light')}catch{}})
 document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()=>document.dispatchEvent(new Event('classroom-layout'))))
 // Motion is progressive: all content starts readable, with no JS prerequisite.
-if(!matchMedia('(prefers-reduced-motion: reduce)').matches){import('./classroom-motion.js').then(({initMotion})=>initMotion()).catch(()=>{})}
+if(!document.querySelector('[data-presentation]')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){import('./classroom-motion.js').then(({initMotion})=>initMotion()).catch(()=>{})}
 
 initFunctionReference(root, state.last)
+
+initPresentation()
