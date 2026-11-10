@@ -19,3 +19,19 @@
 
 /* Key terms and exact interface labels in lesson prose. */
 .lesson-highlight{background:var(--yellow);color:var(--ink);font-weight:650;padding:.05em .22em;border-radius:.22em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+/* Instructor lettering: readable by default, finite motion on request. */
+.instructor-name .name-letters{display:inline-block;white-space:nowrap;font-size:clamp(1.85rem,4.6vw,4.5rem);letter-spacing:-.055em}
+.name-letters>span{display:inline-block;text-shadow:0 3px 0 var(--lavender),0 7px 16px color-mix(in srgb,var(--purple) 25%,transparent);transition:color .2s,text-shadow .2s,transform .2s}
+.name-letters>span:hover{color:var(--purple);transform:translateY(-5px);text-shadow:0 5px 0 var(--lavender),0 10px 22px color-mix(in srgb,var(--purple) 45%,transparent)}
+.name-letters[data-effect=typing]>span{animation:name-type .45s both;animation-delay:calc(var(--letter)*.09s)}
+.name-letters[data-effect=wave]>span{animation:name-wave .85s both;animation-delay:calc(var(--letter)*.07s)}
+.name-letters[data-effect=glow]>span{animation:name-glow 1.4s both;animation-delay:calc(var(--letter)*.07s)}
+.name-effects{display:flex;gap:8px;flex-wrap:wrap;margin-block:20px 26px}
+.name-effects button{min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font-size:.75rem}
+.name-effects button:hover,.name-effects [aria-pressed=true]{background:var(--lavender);border-color:var(--purple);color:var(--purple)}
+.name-effects button:focus-visible{outline:2px solid var(--purple);outline-offset:3px}
+@keyframes name-type{from{opacity:0;transform:translateY(8px);text-shadow:none}to{opacity:1;transform:translateY(0)}}
+@keyframes name-wave{0%,100%{transform:translateY(0)}45%{transform:translateY(-13px);color:var(--purple)}}
+@keyframes name-glow{0%,100%{text-shadow:0 3px 0 var(--lavender),0 7px 16px color-mix(in srgb,var(--purple) 25%,transparent)}50%{color:var(--purple);text-shadow:0 0 12px var(--purple),0 5px 24px var(--purple)}}
+@media(prefers-reduced-motion:reduce){.name-letters>span:hover{transform:none}.name-letters>span{animation:none!important;transition:none!important}}

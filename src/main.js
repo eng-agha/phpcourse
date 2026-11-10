@@ -1,3 +1,4 @@
+import {initNameAnimation} from './sections/name-animation.js'
 import { lectures } from './data/lectures.js'
 import { initPresentation } from './sections/presentation.js'
 import { initFunctionReference } from './sections/function-reference.js'
@@ -22,3 +23,5 @@ if(!document.querySelector('[data-presentation]')&&!matchMedia('(prefers-reduced
 initFunctionReference(root, state.last)
 
 initPresentation()
+
+initNameAnimation()
